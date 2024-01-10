@@ -6,6 +6,7 @@ import java.util.Set;
 
 import com.marvsys.marvsys.entities.enums.StatusEstoque;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -39,7 +40,7 @@ public class Produto implements Serializable {
 
 	private StatusEstoque statusEstoque;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "tb_produto_ingrediente", joinColumns = @JoinColumn(name = "produto_id"), inverseJoinColumns = @JoinColumn(name = "ingrediente_id"))
 	private Set<Ingrediente> ingredientes = new HashSet<>();
 
