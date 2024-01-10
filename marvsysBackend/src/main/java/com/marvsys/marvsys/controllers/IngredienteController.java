@@ -19,6 +19,7 @@ import com.marvsys.marvsys.services.IngredienteService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 
 @Tag(name = "Marv SYS endpoint")
 @RestController
@@ -37,7 +38,7 @@ public class IngredienteController {
 	
 	@Operation(summary = "Cria um ingrediente no banco de dados.")
 	@PostMapping
-	public ResponseEntity<IngredienteDTO> create(@RequestBody IngredienteDTO dto){
+	public ResponseEntity<IngredienteDTO> create(@Valid @RequestBody IngredienteDTO dto){
 		var newObj = service.create(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
 		return ResponseEntity.created(uri).body(newObj);
@@ -45,7 +46,7 @@ public class IngredienteController {
 	
 	@Operation(summary = "Atualiza um ingrediente no banco de dados.")
 	@PutMapping(value = "/{id}")
-	public ResponseEntity<IngredienteDTO> update(@RequestBody IngredienteDTO dto, @PathVariable Long id){
+	public ResponseEntity<IngredienteDTO> update(@Valid @RequestBody IngredienteDTO dto, @PathVariable Long id){
 		var newObj = service.updateIngrediente(dto, id);
 		return ResponseEntity.ok().body(newObj);
 	}

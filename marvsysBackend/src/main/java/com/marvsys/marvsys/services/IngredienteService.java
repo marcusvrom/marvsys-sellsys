@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.marvsys.marvsys.dto.IngredienteDTO;
 import com.marvsys.marvsys.entities.Ingrediente;
 import com.marvsys.marvsys.repositories.IngredienteRepository;
+import com.marvsys.marvsys.services.exceptions.DataIntegratyViolationException;
+import com.marvsys.marvsys.services.exceptions.ObjectNotFoundException;
 
 import jakarta.transaction.Transactional;
 
@@ -19,7 +21,8 @@ public class IngredienteService {
 	
 	public IngredienteDTO findById(Long id) {
 		Optional<Ingrediente> ingreOptional = repository.findById(id);
-		Ingrediente entity = ingreOptional.orElse(null);
+		Ingrediente entity = ingreOptional
+				.orElseThrow(()-> new ObjectNotFoundException("ID do Ingrediente informado não encontrado. "));
 		return new IngredienteDTO(entity);
 	}
 	
@@ -35,7 +38,8 @@ public class IngredienteService {
 	
 	@Transactional
 	public IngredienteDTO updateIngrediente(IngredienteDTO objDto, Long id) {
-		Ingrediente ingrediente = repository.findById(id).orElse(null);
+		Ingrediente ingrediente = repository.findById(id)
+				.orElseThrow(()-> new ObjectNotFoundException("ID do ingrediente informado não encontrado. "));
 		ingrediente.setNome(objDto.getNome());
 		ingrediente.setQuantidade(objDto.getQuantidade());
 		ingrediente.setStatusEstoque(objDto.getStatusEstoque());
@@ -45,7 +49,13 @@ public class IngredienteService {
 	}
 	
 	public void delete(Long id) {
-		repository.deleteById(id);
+		findById(id);
+		try {
+			repository.deleteById(id);
+		} catch (DataIntegratyViolationException e) {
+			throw new DataIntegratyViolationException("Não pode deletar ingredientes associados com um produto. ");
+		}
+		
 	}
 
 }
