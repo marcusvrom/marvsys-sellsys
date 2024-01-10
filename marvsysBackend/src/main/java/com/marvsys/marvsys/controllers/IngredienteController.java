@@ -17,19 +17,25 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import com.marvsys.marvsys.dto.IngredienteDTO;
 import com.marvsys.marvsys.services.IngredienteService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+@Tag(name = "Marv SYS endpoint")
 @RestController
 @RequestMapping(value = "/ingrediente")
 public class IngredienteController {
 
 	@Autowired
 	private IngredienteService service;
-
+	
+	@Operation(summary = "Busca um ingrediente pelo ID.")
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<IngredienteDTO> findById(@PathVariable Long id) {
 		var response = service.findById(id);
 		return ResponseEntity.ok().body(response);
 	}
 	
+	@Operation(summary = "Cria um ingrediente no banco de dados.")
 	@PostMapping
 	public ResponseEntity<IngredienteDTO> create(@RequestBody IngredienteDTO dto){
 		var newObj = service.create(dto);
@@ -37,12 +43,14 @@ public class IngredienteController {
 		return ResponseEntity.created(uri).body(newObj);
 	}
 	
+	@Operation(summary = "Atualiza um ingrediente no banco de dados.")
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<IngredienteDTO> update(@RequestBody IngredienteDTO dto, @PathVariable Long id){
 		var newObj = service.updateIngrediente(dto, id);
 		return ResponseEntity.ok().body(newObj);
 	}
 	
+	@Operation(summary = "Deleta um ingrediente não associado no banco de dados.")
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<Void> delete(@PathVariable Long id){
 		service.delete(id);
