@@ -8,6 +8,7 @@ class MarvsysApplicationTests {
 
 	@Test
 	void contextLoads() {
+		MarvsysApplication.main(new String[] {});
 	}
 
 }
