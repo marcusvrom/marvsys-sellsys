@@ -62,7 +62,7 @@ public class ProdutoService {
 		Produto produto = repository.findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException("Produto não encontrado. "));
 		produto.setNome(produtoDTO.getNome());
-		produto.setStatusEstoque(produtoDTO.getStatusEstoque());
+		produto.setQuantidade(produtoDTO.getQuantidade());
 		repository.save(produto);
 		return new ProdutoDTO(produto);
 	}

@@ -3,6 +3,8 @@ package com.marvsys.marvsys.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.marvsys.marvsys.dto.IngredienteDTO;
@@ -57,6 +59,11 @@ public class IngredienteService {
 			throw new DataIntegratyViolationException("Não pode deletar ingredientes associados com um produto. ");
 		}
 		
+	}
+
+	public Page<IngredienteDTO> findAllPaged(Pageable pageable) {
+		Page<Ingrediente> list = repository.findAll(pageable);
+		return list.map(x -> new IngredienteDTO(x));
 	}
 
 }

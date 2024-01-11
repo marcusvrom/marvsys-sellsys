@@ -8,9 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,7 +54,7 @@ public class ProdutoController {
 	}
 	
 	@Operation(summary = "Atualiza dados do produtos.")
-	@PutMapping(value = "/{id}")
+	@PatchMapping(value = "/{id}")
 	public ResponseEntity<ProdutoDTO> update(@RequestBody ProdutoDTO dto, @PathVariable Long id) {
 		var response = service.update(dto, id);
 		return ResponseEntity.ok().body(response);

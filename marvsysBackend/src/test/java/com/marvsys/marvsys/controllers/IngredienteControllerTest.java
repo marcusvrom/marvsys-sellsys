@@ -9,6 +9,8 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Collections;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +18,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -100,6 +106,19 @@ public class IngredienteControllerTest {
 		assertEquals(ResponseEntity.class, response.getClass());
 		verify(service, times(1)).delete(anyLong());
 		assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+	}
+	
+	@Test
+	void whenFindAllThenReturnSuccess() {
+		Pageable pageable = PageRequest.of(0, 10); 
+		Page<IngredienteDTO> page = new PageImpl<>(Collections.emptyList(), pageable, 0); 
+		when(service.findAllPaged(pageable)).thenReturn(page);
+
+		ResponseEntity<Page<IngredienteDTO>> response = controller.findAllPaged(pageable);
+		assertNotNull(response);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(page, response.getBody());
+		verify(service).findAllPaged(pageable);
 	}
 
 	private void startIngrediente() {

@@ -3,12 +3,14 @@ package com.marvsys.marvsys.controllers;
 import java.net.URI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +31,13 @@ public class IngredienteController {
 	@Autowired
 	private IngredienteService service;
 	
+	@Operation(summary = "Atrás uma lista com paginação de ingredientes.")
+	@GetMapping
+	public ResponseEntity<Page<IngredienteDTO>> findAllPaged(Pageable pageable){
+		Page<IngredienteDTO> response = service.findAllPaged(pageable);
+		return ResponseEntity.ok().body(response);
+	}
+	
 	@Operation(summary = "Busca um ingrediente pelo ID.")
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<IngredienteDTO> findById(@PathVariable Long id) {
@@ -45,7 +54,7 @@ public class IngredienteController {
 	}
 	
 	@Operation(summary = "Atualiza um ingrediente no banco de dados.")
-	@PutMapping(value = "/{id}")
+	@PatchMapping(value = "/{id}")
 	public ResponseEntity<IngredienteDTO> update(@Valid @RequestBody IngredienteDTO dto, @PathVariable Long id){
 		var newObj = service.updateIngrediente(dto, id);
 		return ResponseEntity.ok().body(newObj);

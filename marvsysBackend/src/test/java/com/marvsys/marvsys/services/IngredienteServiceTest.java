@@ -3,6 +3,7 @@ package com.marvsys.marvsys.services;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doThrow;
@@ -10,6 +11,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +23,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import com.marvsys.marvsys.dto.IngredienteDTO;
 import com.marvsys.marvsys.entities.Ingrediente;
@@ -130,6 +138,27 @@ public class IngredienteServiceTest {
 		doThrow(DataIntegratyViolationException.class).when(repository).deleteById(ID);
 		assertThrows(DataIntegratyViolationException.class, () -> service.delete(ID));
 
+	}
+	
+	@DisplayName("Deveria retornar uma paginação de ingredientes.")
+	@Test 
+	void whenFindAllPagedThenReturnPageOfIngredienteDTO() {
+		List<Ingrediente> ingredientes = Arrays.asList(new Ingrediente(2L, "ingr1", 2, StatusEstoque.DISPONIVEL),
+				new Ingrediente(ID, NOME, QUANTIDADE, STATUS));
+		Page<Ingrediente> ingrePage = new PageImpl<>(ingredientes);
+		when(repository.findAll(any(Pageable.class))).thenReturn(ingrePage);
+		Page<IngredienteDTO> response = service.findAllPaged(PageRequest.of(0, 5));
+		assertNotNull(response);
+	}
+	
+	@DisplayName("Deveria retornar uma paginação vazia.")
+	@Test 
+	void whenFindAllPagedThenReturnEmptyPage() {
+		Page<Ingrediente> ingrePage = new PageImpl<>(Collections.emptyList());
+		when(repository.findAll(any(Pageable.class))).thenReturn(ingrePage);
+		Page<IngredienteDTO> result = service.findAllPaged(PageRequest.of(0, 10));
+		assertNotNull(result);
+		assertTrue(result.isEmpty());
 	}
 
 	private void startIngrediente() {
