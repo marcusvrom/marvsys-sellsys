@@ -55,7 +55,7 @@ public class ComboController {
 	@Operation(summary = "Cria um combo.")
 	@PostMapping
 	public ResponseEntity<ComboDTO> create(@Valid @RequestBody ComboDTO dto){
-		var newObj = service.crete(dto);
+		var newObj = service.create(dto);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(newObj.getId()).toUri();
 		return ResponseEntity.created(uri).body(newObj);
 	}

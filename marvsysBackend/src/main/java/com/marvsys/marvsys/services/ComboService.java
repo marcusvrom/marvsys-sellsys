@@ -14,6 +14,8 @@ import com.marvsys.marvsys.repositories.ComboRepository;
 import com.marvsys.marvsys.repositories.ProdutoRepository;
 import com.marvsys.marvsys.services.exceptions.ObjectNotFoundException;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ComboService {
 
@@ -28,7 +30,8 @@ public class ComboService {
 		Combo entity = co.orElseThrow(() -> new ObjectNotFoundException("Combo informado não encontrado. "));
 		return new ComboDTO(entity);
 	}
-
+	
+	@Transactional
 	public ComboDTO update(ComboDTO comboDTO, Long id) {
 		Combo combo = repository.findById(id)
 				.orElseThrow(() -> new ObjectNotFoundException("Combo informado não encontrado. "));
@@ -47,8 +50,9 @@ public class ComboService {
 		findById(id);
 		repository.deleteById(id);
 	}
-
-	public ComboDTO crete(ComboDTO comboDTO) {
+	
+	@Transactional
+	public ComboDTO create(ComboDTO comboDTO) {
 		Combo combo = new Combo();
 		combo.setNome(comboDTO.getNome());
 		combo.setQuantidade(comboDTO.getQuantidade());
